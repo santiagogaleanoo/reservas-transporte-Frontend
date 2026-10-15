@@ -1,91 +1,82 @@
+// src/auth/Login.jsx
 import React, { useState } from 'react';
-import { loginUsuario } from '../api/authApi';
 
-export default function Login() {
+export default function Login({ onNavegar }) {
   const [loading, setLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState('');
-  const [loginForm, setLoginForm] = useState({
-    email: '',
-    numeroDocumento: '',
-  });
+  const [form, setForm] = useState({ email: '', numeroDocumento: '' });
 
-  const handleChange = (e) => {
-    setLoginForm({ ...loginForm, [e.target.name]: e.target.value });
-  };
+  const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     setLoading(true);
-    setErrorMessage('');
-    try {
-      await loginUsuario(loginForm);
-      alert('Autenticación exitosa.');
-    } catch (err) {
-      setErrorMessage(err.message || 'Credenciales inválidas o error de servidor.');
-    } finally {
+    setTimeout(() => {
       setLoading(false);
-    }
+      onNavegar('inicio');
+    }, 600);
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 flex flex-col justify-center items-center px-4 py-12 font-sans text-slate-100">
-      <div className="mb-8 text-center">
-        <div className="inline-block px-4 py-1 bg-slate-900 border border-slate-800 rounded-full text-xs font-semibold tracking-widest text-amber-500 uppercase mb-3">
-          Sistema de Reservas Corporativas
+    <div className="min-h-[calc(100vh-80px)] bg-slate-50 flex flex-col justify-center items-center px-4 py-12 font-sans">
+      <div className="w-full max-w-md bg-white border border-slate-200 rounded-2xl p-8 shadow-xl">
+        <div className="text-center mb-8">
+          <span className="text-[10px] font-bold tracking-widest text-rose-600 uppercase bg-rose-50 border border-rose-200 px-3 py-1 rounded-full">
+            Plataforma Corporativa
+          </span>
+          <h2 className="text-2xl font-bold text-slate-900 tracking-tight mt-4">
+            Inicio de Sesión
+          </h2>
+          <p className="text-xs text-slate-500 mt-1">
+            Ingrese sus datos para gestionar sus itinerarios
+          </p>
         </div>
-        <h1 className="text-3xl font-light tracking-tight text-white">
-          Inicio de Sesión
-        </h1>
-      </div>
 
-      <div className="w-full max-w-md bg-slate-900/80 border border-slate-800 rounded-xl shadow-2xl backdrop-blur-md p-8">
-        {errorMessage && (
-          <div className="mb-6 p-4 bg-red-950/50 border border-red-800/80 rounded-lg text-red-200 text-sm">
-            {errorMessage}
-          </div>
-        )}
-
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-5">
           <div>
-            <label className="block text-xs font-medium uppercase tracking-wider text-slate-400 mb-2">
+            <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-2">
               Correo Electrónico
             </label>
             <input
               type="email"
               name="email"
               required
-              maxLength={120}
-              value={loginForm.email}
+              value={form.email}
               onChange={handleChange}
               placeholder="ejecutivo@empresa.com"
-              className="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-3 text-white placeholder-slate-600 focus:outline-none focus:border-amber-500 text-sm transition-colors"
+              className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:border-rose-600 focus:bg-white transition-all"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-medium uppercase tracking-wider text-slate-400 mb-2">
+            <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-2">
               Número de Documento
             </label>
             <input
               type="text"
               name="numeroDocumento"
               required
-              maxLength={20}
-              value={loginForm.numeroDocumento}
+              value={form.numeroDocumento}
               onChange={handleChange}
-              placeholder="Identificación registrada"
-              className="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-3 text-white placeholder-slate-600 focus:outline-none focus:border-amber-500 text-sm transition-colors"
+              placeholder="Documento registrado"
+              className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:border-rose-600 focus:bg-white transition-all"
             />
           </div>
 
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-3.5 bg-amber-600 hover:bg-amber-500 text-slate-950 font-semibold text-sm rounded-lg transition-colors duration-200 uppercase tracking-wider disabled:opacity-50"
+            className="w-full py-3.5 bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs uppercase tracking-wider rounded-xl transition-all shadow-md shadow-rose-600/20 disabled:opacity-50 mt-2"
           >
-            {loading ? 'Verificando...' : 'Acceder a la Plataforma'}
+            {loading ? 'Verificando...' : 'Acceder'}
           </button>
         </form>
+
+        <div className="mt-6 pt-6 border-t border-slate-100 text-center text-xs text-slate-500">
+          ¿No tiene cuenta?{' '}
+          <button onClick={() => onNavegar('registro')} className="text-rose-600 hover:underline font-bold ml-1">
+            Registrarse aquí
+          </button>
+        </div>
       </div>
     </div>
   );
