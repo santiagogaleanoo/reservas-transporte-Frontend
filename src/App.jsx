@@ -1,29 +1,40 @@
-import { Route, Routes } from 'react-router'
-import BarraNavegacion from './components/BarraNavegacion.jsx'
-import RutaProtegida from './components/RutaProtegida.jsx'
-import Inicio from './pages/Inicio.jsx'
-import Login from './pages/Login.jsx'
-import NoEncontrada from './pages/NoEncontrada.jsx'
-import Paises from './pages/Paises.jsx'
+// src/App.jsx
+import React, { useState } from 'react';
+import BarraNavegacion from './components/BarraNavegacion';
+import BusquedaViajes from './pages/BusquedaViajes';
+import Login from './auth/Login';
+import Registro from './auth/Registro';
+import DetalleReserva from './pages/DetalleReserva';
+import GestionVehiculos from './pages/admin/GestionVehiculos';
+import DashboardReportes from './pages/admin/DashboardReportes';
 
-// Aquí se define qué página se muestra para cada dirección (URL).
-function App() {
+export default function App() {
+  const [rutaActual, setRutaActual] = useState('inicio');
+
+  const renderVista = () => {
+    switch (rutaActual) {
+      case 'login':
+        return <Login onNavegar={setRutaActual} />;
+      case 'registro':
+        return <Registro onNavegar={setRutaActual} />;
+      case 'reserva':
+        return <DetalleReserva onNavegar={setRutaActual} />;
+      case 'vehiculos':
+        return <GestionVehiculos onNavegar={setRutaActual} />;
+      case 'reportes':
+        return <DashboardReportes onNavegar={setRutaActual} />;
+      case 'inicio':
+      default:
+        return <BusquedaViajes onNavegar={setRutaActual} />;
+    }
+  };
+
   return (
-    <>
-      <BarraNavegacion />
-      <main className="contenedor">
-        <Routes>
-          <Route path="/" element={<Inicio />} />
-          <Route path="/login" element={<Login />} />
-          {/* Las rutas dentro de RutaProtegida piden haber iniciado sesión */}
-          <Route element={<RutaProtegida />}>
-            <Route path="/paises" element={<Paises />} />
-          </Route>
-          <Route path="*" element={<NoEncontrada />} />
-        </Routes>
+    <div className="min-h-screen bg-slate-950 text-slate-100 font-sans selection:bg-amber-500 selection:text-slate-950">
+      <BarraNavegacion rutaActual={rutaActual} onNavegar={setRutaActual} />
+      <main>
+        {renderVista()}
       </main>
-    </>
-  )
+    </div>
+  );
 }
-
-export default App

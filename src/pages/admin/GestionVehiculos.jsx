@@ -1,6 +1,6 @@
 // src/pages/GestionVehiculos.jsx
 import React, { useState, useEffect } from 'react';
-import { obtenerVehiculos, guardarVehiculo, eliminarVehiculo } from '../api/adminApi';
+import { obtenerVehiculos, guardarVehiculo, eliminarVehiculo } from "../../api/adminApi";
 
 export default function GestionVehiculos() {
   const [vehiculos, setVehiculos] = useState([]);
