@@ -1,12 +1,14 @@
-import { Navigate, Outlet } from 'react-router'
-import { haySesion } from '../auth/sesion.js'
+import { Navigate, useLocation } from 'react-router-dom'
+import { useSesion } from '../sesion/contexto'
 
-// Si no hay sesión, manda al login. Si la hay, muestra la página pedida (Outlet).
-function RutaProtegida() {
-  if (!haySesion()) {
-    return <Navigate to="/login" replace />
+export default function RutaProtegida({ children, roles }) {
+  const { usuario, rol } = useSesion()
+  const ubicacion = useLocation()
+  if (!usuario) {
+    return <Navigate to={`/ingresar?volver=${encodeURIComponent(ubicacion.pathname + ubicacion.search)}`} replace />
   }
-  return <Outlet />
+  if (roles && !roles.includes(rol)) {
+    return <Navigate to={rol === 'CLIENTE' ? '/mis-viajes' : '/panel'} replace />
+  }
+  return children
 }
-
-export default RutaProtegida
